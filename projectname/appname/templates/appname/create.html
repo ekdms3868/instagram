@@ -1,0 +1,12 @@
+{% extends 'appname/base.html' %}
+
+{% block content %}
+<form method="POST" enctype="multipart/form-data">
+  {% csrf_token %}
+  <table>
+    {{ form.as_table }}
+  </table>
+  <input type="submit" class="btn btn-primary btn-xl rounded-pill mt-3" value="글올리기">
+</form>
+
+{% endblock %}

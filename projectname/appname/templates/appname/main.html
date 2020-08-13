@@ -1,0 +1,74 @@
+{% extends 'appname/base.html' %}
+
+{% block content %}
+{% load static %}
+<div class="containers">
+  {% for post in posts.all %}
+  <div class="mb-3 text-center"></div>
+  <div class="profile-userbuttons">
+    <button type="button" class="btn"><svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-person-plus-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+      <path fill-rule="evenodd" d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm7.5-3a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5z"/>
+      <path fill-rule="evenodd" d="M13 7.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0v-2z"/>
+    </svg></button>
+    <button type="button" class="btn"><svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-chat-left-dots-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+      <path fill-rule="evenodd" d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4.414a1 1 0 0 0-.707.293L.854 15.146A.5.5 0 0 1 0 14.793V2zm5 4a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
+    </svg></button>
+  </div>
+<hr>
+<div class="card-head">
+    <img class="headerimg" src="{{ post.image.url }}">
+    <h4 class="writers">{{ post.writer }}</h4>
+    <a class="locations">{{post.location}}</a>
+  
+</div>
+{% if post.image %}
+<br>
+    <img src="{{ post.image.url }}" width="750" height="400">
+{% endif %}
+<!-- <h2>{{ post.title}}</h2>  -->
+<br>
+<h3>{{post.content}}</h3>
+<span>
+    <br>
+    {% for hashtag in post.hashtags.all %}
+      <a href="/hashtag/{{ hashtag.name }}">{{ hashtag.name }}</a>
+    {% endfor %}
+</span> 
+<br>
+<hr>
+<a href="{% url 'like' pk=post.pk %}">
+{% if user in post.likes.all %}
+    <svg class="heart" width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-heart-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
+    </svg>
+{% else %}
+    <svg class="heart" width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-heart" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd" d="M8 2.748l-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z"/>
+    </svg>
+{% endif %}
+
+<div class="d-flex">
+<p class="hearts my-1">좋아요 {{ post.likes.count }}개</p>
+<a class="side" href="{% url 'update' pk=post.pk %}"> 수정하기</a>
+<a href="{% url 'delete' pk=post.pk %}"> 삭제하기</a>
+</div>
+
+<hr>
+ 
+<div class="card my-2">
+  <div class="card-body">
+    <form method="POST" action="/comment/{{ post.id }}">
+      {% csrf_token %}
+      {{ comment_form.as_p }}
+        <button type="submit" class="btn btn-primary">게시</button>
+      </form>
+      {% for comment in post.comments.all %}
+        <h10>{{ comment.c_writer }} : {{ comment.text }}</h10>
+        <br>
+      {% endfor%}
+  </div>
+</div>
+<br>
+{% endfor %}
+
+{% endblock %}

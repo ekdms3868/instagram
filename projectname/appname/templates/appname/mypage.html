@@ -1,0 +1,70 @@
+{% extends 'appname/base.html' %}
+
+{% block mymy %}
+<style>
+.body{
+    font-family: 'paybooc-Bold';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-07@1.0/paybooc-Bold.woff') format('woff');
+}
+.card-head{
+      text-align: left;
+      background-color: rgb(178, 245, 245);
+      max-height: 70px;
+    }
+.fb-image-profile
+{
+  position: relative;
+  top: 30px;
+  left: 60px;
+  width: 18%; 
+}
+.fb-profile {
+    background-color: white;
+}
+.out {
+    color: red;
+    position: relative;
+    left: 360px;
+    text-align: center;
+}
+</style>
+{% if user.is_authenticated %}
+<div class="container">
+    <div class="fb-profile">
+        <img align="left" class="fb-image-profile thumbnail" src="https://t1.daumcdn.net/cfile/tistory/993B81465D0F93013C" alt="Profile image example"/>
+        <div class="fb-profile-text">
+            <br>
+            <h1>{{ user.username }}</h1>
+            <p> NICKNAME: {{ user.nickname }}</p>
+            <p> EMAIL: {{ user.email }}</p>
+            <p> NUMBER: {{ user.phone_number }}</p>
+        </div>
+        <a class="out" href="{% url 'logout' %}">SIGN OUT</a>
+{% for post in posts %}
+<br>
+<hr> 
+<div class="card-head">
+    <img class="headerimg" src="{{ post.image.url }}">
+    <h4 class="writers">{{ post.writer }}</h4>
+    <a class="locations">{{post.location}}</a>
+</div>
+{% if post.image %}
+<br>
+    <img src="{{ post.image.url }}" width="250" height="250">
+{% endif %}
+ # <h2>{{ post.title}}</h2>  
+<br>
+<h3>{{post.content}}</h3>
+<span>
+    {{post.location}}
+    <br>
+    {% for hashtag in post.hashtags.all %}
+      <a href="/hashtag/{{ hashtag.name }}">{{ hashtag.name }}</a>
+    {% endfor %}
+</span> 
+<br>
+    <a href="{% url 'update' pk=post.pk %}"> 수정하기</a>
+    <a href="{% url 'delete' pk=post.pk %}"> 삭제하기</a>
+{% endfor %}
+{% endif %}
+{% endblock %}
